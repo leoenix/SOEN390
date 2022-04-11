@@ -2,7 +2,7 @@ import {Avatar, Box, Grid, CardHeader, Paper, List, ListItem, CardActions, IconB
 import {styled} from '@mui/material/styles';
 import React, {useState, useEffect} from 'react';
 import Axios from 'axios';
-import {Navigate} from "react-router-dom";
+import {Navigate, useLocation} from "react-router-dom";
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import FlagIcon from '@mui/icons-material/Flag';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
@@ -17,6 +17,9 @@ import {ArgumentAxis, ValueAxis, Chart, BarSeries} from '@devexpress/dx-react-ch
 
 function DoctorDashboard() {
 
+    const location = useLocation();
+    
+    const [doctorId, setDoctorID] = useState(parseInt(localStorage.getItem('id'))); //Doctor id retrieved from state variable
     const [patientList, setPatientList] = useState([]); //all patient info
     const [patientsPerDoctor, setPatientPerDoctorList] = useState([]); //all patient info
     const [allPatients, setAllPatientList] = useState([]); //all patient info
@@ -33,8 +36,6 @@ function DoctorDashboard() {
     const [notificationsList, setNotificationsList] = useState([]); //list of notfications
     const [formNotificationsList, setFormNotificationsList] = useState([]);
 
-
-    var tempDoctorID = 6;
     // functions to make notifications disappear when clicked on X button
     const handleApptMask = (index) => (event) => {
         // prevent reload, then update notification in backend, then reload page
@@ -78,18 +79,14 @@ function DoctorDashboard() {
     }
 
     function getDoctorPatients() { //returns all patient information for a given doctor using GET
-        Axios.get("http://localhost:8080/doctorViewingTheirPatientData", {params: {id: tempDoctorID}}).then((response) => {
+        Axios.get("http://localhost:8080/doctorViewingTheirPatientData", {params: {id: doctorId}}).then((response) => {
             setPatientList(response.data);
-            console.log("Logged In Doctor Patients:");
-            console.log(response.data);
         }).catch(alert);
     };
 
     function getPatientsPerDoctor() { //returns all patient information organized by doctor using GET
         Axios.get("http://localhost:8080/doctorViewingDoctorPatients").then((response) => {
             setPatientPerDoctorList(response.data);
-            console.log("Patients Organized By Doctor:");
-            console.log(response.data);
         }).catch(alert);
     };
 
@@ -97,16 +94,12 @@ function DoctorDashboard() {
     function getAllPatients() { //returns all patient information using GET
         Axios.get("http://localhost:8080/doctorViewingAllPatientData").then((response) => {
             setAllPatientList(response.data);
-            console.log("All Patients:");
-            console.log(response.data);
         }).catch(alert);
     };
 
     function getStatusCountAllPatients() {// This will return the number of patients classified under each status for ALL patients
         Axios.get("http://localhost:8080/statusCountAllPatients").then((response) => {
             setTotalStatusCounts(response.data);
-            console.log("Counts:");
-            console.log(response.data)
         }).catch(alert);
     };
 
@@ -117,72 +110,54 @@ function DoctorDashboard() {
             }
         }).then((response) => {
             setTotalMyPatientsStatusCounts(response.data);
-            console.log("My Patients Count:");
-            console.log(response.data);
         }).catch(alert);
     };
 
     function getDoctorsWithMostPatients() { //This will return the top 5 doctors with most to least patients
         Axios.get("http://localhost:8080/doctorsWithMostPatients").then((response) => {
             setDoctorsWithMostPatientsList(response.data);
-            console.log("Doctors With Most Patients:");
-            console.log(response.data)
         }).catch(alert);
     };
 
     function getDoctorsWithLeastPatients() { //This will return the top 5 doctors with least to most patients
         Axios.get("http://localhost:8080/doctorsWithLeastPatients").then((response) => {
             setDoctorsWithLeastPatientsList(response.data);
-            console.log("Doctors With Least Patients:");
-            console.log(response.data)
         }).catch(alert);
     };
 
     function getTotalNumberOfDoctors() { //This will return the total number of validated doctors
         Axios.get("http://localhost:8080/countAllValidatedDoctors").then((response) => {
             setValidatedDoctorCount(response.data);
-            console.log("Total Number of Doctors:");
-            console.log(response.data)
         }).catch(alert);
     };
 
     function getTotalNumberOfPatients() { //This will return the total number of validated doctors
         Axios.get("http://localhost:8080/countAllPatients").then((response) => {
             setTotalPatientCount(response.data);
-            console.log("Total Number of Patients:");
-            console.log(response.data)
         }).catch(alert);
     };
 
     function getTotalNumberOfFlaggedPatients() { //This will return the total number of validated doctors
         Axios.get("http://localhost:8080/countAllFlaggedPatients").then((response) => {
             setTotalFlaggedPatientCount(response.data);
-            console.log("Total Number of Flagged Patients:");
-            console.log(response.data)
         }).catch(alert);
     };
 
     function getFlaggedPatientsNotViewed() { //This will return the list of patients that have submitted a form but have not been reviewed
         Axios.get("http://localhost:8080/patientsFlaggedNotViewed").then((response) => {
             setPatientsFlaggedNotViewedList(response.data);
-            console.log("Flagged Patients Not Viewed");
-            console.log(response.data)
         }).catch(alert);
     };
 
     function getFlaggedPatientsLeastViewed() { //This will return the list of patients whose form has been reviewed from longest to most recent
         Axios.get("http://localhost:8080/patientsFlaggedLeastViewed").then((response) => {
             setpatientsFlaggedLeastViewedList(response.data);
-            console.log("Patients Flagged Least Viewed");
-            console.log(response.data)
         }).catch(alert);
     };
 
     function getFlaggedPatientsNoSymptomFormResponse() { //This will return the list of patients that have been sent a form to fill out but have not done so
         Axios.get("http://localhost:8080/patientsFlaggedNoSymptomFormResponse").then((response) => {
             setpatientsFlaggedNoSymptomFormResponseList(response.data);
-            console.log("Patients Flagged No Symptom Form Response:");
-            console.log(response.data)
         }).catch(alert);
     };
 
@@ -193,8 +168,6 @@ function DoctorDashboard() {
             }
         }).then((response) => {
             setNotificationsList(response.data);
-            console.log("Notification List:");
-            console.log(response.data);
         }).catch(alert);
     }
 
@@ -205,8 +178,6 @@ function DoctorDashboard() {
             }
         }).then((response) => {
             setFormNotificationsList(response.data);
-            console.log("Notification List:");
-            console.log(response.data);
         }).catch(alert);
     }
 
