@@ -32,12 +32,19 @@ const roles = [
 
 //handling the Signup form
 let userRoles = 'Patient';
-
+let dateOfBirth = '2014-08-18T21:11:54'
 
 function Signup() {
   //switching roles
   const [role, setRoles] = React.useState('Patient');
   const [isDoctor, setIsDoctor] = useState(false);
+  const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+  var todayDate = yyyy+ '-' +mm+ '-' +dd;
+  
   // signing up -> if correct send to login page -> if not  display error
   let submitSignupForm = (event1) => {
     event1.preventDefault();
@@ -50,7 +57,8 @@ function Signup() {
         password: data.get('password'),
         userRole: userRoles,
         phoneNumber: data.get('PhoneNumber'),
-        medicalLicense: data.get('medicalLicense') ? data.get('medicalLicense') : ''
+        medicalLicense: data.get('medicalLicense') ? data.get('medicalLicense') : '',
+        dateOfBirth: dateOfBirth
       }, { withCredentials: true }).then(() => {
 
         window.location.href = "/Login"
@@ -69,6 +77,10 @@ function Signup() {
     } else {
       setIsDoctor(false);
     }
+  };
+  const handleChange2 = (DOB) => {
+    setValue(DOB.target.value);
+    dateOfBirth = DOB.target.value
   };
   // remove error message after new submit
   const submit = () => {
@@ -152,7 +164,7 @@ function Signup() {
               <Grid item xs={12}>
                 <TextField required fullWidth name="password" label="Password" type="password" id="password" autoComplete="new-password" onChange={(e) => validatePassword(e)}
                   onMouseEnter={() => setIsPassword1Shown(true)} onMouseLeave={() => setIsPassword1Shown(false)} />
-                  {/* Telling user the correct format for password */}
+                {/* Telling user the correct format for password */}
                 {isPassword1Shown && (
                   <div>
                     min Length is 8, at least 1 lowercase, at least 1 Uppercase, at least 1 Numbers,at least 1 Symbols
@@ -163,13 +175,21 @@ function Signup() {
               <Grid item xs={12}>
                 <TextField required fullWidth name="confirmPassword" label="Confirm Password" type="password" id="Confirmpassword" autoComplete="new-password" onChange={(e) => validatePassword(e)}
                   onMouseEnter={() => setIsPassword2Shown(true)} onMouseLeave={() => setIsPassword2Shown(false)} />
-                  {/* Telling user the correct format for password */}
+                {/* Telling user the correct format for password */}
                 {isPassword2Shown && (
                   <div>
                     min Length is 8, at least 1 lowercase, at least 1 Uppercase, at least 1 Numbers, at least 1 Symbols
                   </div>
                 )}
                 {passwordError}
+              </Grid>
+              {/*Date of Birth*/}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  type="date"
+                  inputProps={{ min: "1900-01-01", max: todayDate}}
+                  onChange={handleChange2}
+                />
               </Grid>
               {isDoctor && <Grid item xs={12}>
                 <TextField required fullWidth name="medicalLicense" label="Medical License" id="medicalLicense" autoComplete="medical-license" />
@@ -185,7 +205,7 @@ function Signup() {
               </Grid>
             </Grid>
             {/* Burron for submit */}
-            <div onClick={submit}> 
+            <div onClick={submit}>
               <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                 Sign Up
               </Button>
@@ -202,7 +222,7 @@ function Signup() {
             </Grid>
           </Box>
         </Box>
-      </Container> 
+      </Container>
     </>
   );
 }
