@@ -102,7 +102,7 @@ function PatientProfile() {
                             </Grid>
                             <Grid item xs={12} sm={6} md={4}>
                                 <Item>
-                                    Birthdate:<br />{patientData.map((val, key) => { return " " + val.Birthday })}
+                                    Birthdate:<br />{patientData.map((val, key) => { return " " + new Date (val.Birthday).getFullYear() +"-" +  (new Date (val.Birthday).getMonth()+1) + "-" +  new Date (val.Birthday).getDate() })}
                                 </Item>
                             </Grid>
                             <Grid item xs={12} sm={6} md={4}>
