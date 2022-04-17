@@ -3,17 +3,15 @@ import {Container,Box,Grid,CssBaseline,Button,styled,Paper,Typography,Select,Men
 import Axios from 'axios';
 import {useLocation, Navigate, Link} from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useSelect } from '@mui/base/SelectUnstyled';
 import FlagIcon from '@mui/icons-material/Flag'
 
 const Item = styled(Paper)(({ theme }) => ({
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'left',
-    color: theme.palette.text.secondary,
-    fontWeight: 'bold'
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'left',
+  color: theme.palette.text.secondary,
+  fontWeight: 'bold',
 }));
-
 
 function DoctorViewingPatient() {
     const [flagPriority, setFlagPriority] = React.useState(0);
@@ -32,12 +30,11 @@ function DoctorViewingPatient() {
 
 
     useEffect(() => { //When page is loaded, get requests will get patient data as well as a list of patients whose profiles have been viewed
-        Axios.get("http://localhost:8080/doctorViewingPatientData", { params: { id: location.state.ID } }).then((response) => {
-            setFlagPriority(response.data[0].Flagged)
-
+        Axios.get("http://localhost:8080/doctorViewingPatientData", { params: { id: location.state.ID }, withCredentials:true }).then((response) => {
+            setFlagPriority(response.data[0].Flagged);
             setPatientData(response.data);
         });
-        Axios.get("http://localhost:8080/Viewed").then((response) => {
+        Axios.get("http://localhost:8080/Viewed",{withCredentials: true}).then((response) => {
             setViewedList(response.data);
 
         });
@@ -53,7 +50,7 @@ function DoctorViewingPatient() {
             PatientDocID: patientData.map((val, key) => { return val.DoctorID })[0],
             DoctorID: tempDoctorID,
             datetime: timestamp
-        }).then(() => {
+        },{withCredentials: true}).then(() => {
             console.log("success")
         }).catch((err) => console.log(err));
     };
@@ -61,41 +58,40 @@ function DoctorViewingPatient() {
     let requestForm = () => { //When clicking the REQUEST SYMPTOM FORM button, this will update the SymptomRequested attribute in the patient tale to true
         Axios.post("http://localhost:8080/requestForm", {
             PatientID: location.state.ID
-        }).then(() => {
-            console.log("success")
+        },{withCredentials: true}).then(() => {
+            console.log("success");
         });
     }
 
     let previousSymptoms = () => { //This function gets the list of all the patients previous symptom forms (to be rendered on a page in later sprint)
-        Axios.get("http://localhost:8080/doctorViewingPreviousSymptoms", { params: { id: location.state.ID } }).then((response) => {
+        Axios.get("http://localhost:8080/doctorViewingPreviousSymptoms", { params: { id: location.state.ID }, withCredentials:true }).then((response) => {
             console.log("success");
         });
     }
 
     let flagPatient = () => { //When clicking the REQUEST SYMPTOM FORM button, this will update the SymptomRequested attribute in the patient tale to true
-
         Axios.post("http://localhost:8080/flagPatient", {
             PatientID: location.state.ID,
             FlagPriority: flagPriority === 0 ? 1 : flagPriority
-        }).then(() => {
-            console.log("success")
+        },{withCredentials: true}).then(() => {
+            console.log("success");
         });
     }
 
     let unflagPatient = () => { //When clicking the UNFLAG button, this will update the Flagged attribute in the patient tale to false
         Axios.post("http://localhost:8080/unflagPatient", {
             PatientID: location.state.ID //The patient ID is being passed to the post method
-        }).then(() => {
-            console.log("success")
+        },{withCredentials: true}).then(() => {
+            console.log("success");
         });
     }
 
     let acceptChat = () => { //When clicking the ACCEPT CHAt button, this will update the ChatPermission attribute in the patient tale to true
         Axios.post("http://localhost:8080/acceptChat", {
             PatientID: location.state.ID //The patient ID is being passed to the post method
-        }).then(() => {
-            console.log("success")
-            window.location.href = "/DoctorViewingPatient"
+        },{withCredentials: true}).then(() => {
+            console.log("success");
+            window.location.href = "/DoctorViewingPatient";
         });
     }
 
@@ -244,26 +240,81 @@ function DoctorViewingPatient() {
                                     
                                     {/* If the patient has not been viewed since an update or is a new patient, the doctors will be able
                                     to mark them as reviewed. The act of marking a patient as reviewed will only be allowed for their own doctor. */}
-                                    {((!isViewed || isNewPatient) && viewingDoctorsPatient) ? (<Button xs={12} sm={3} sx={{ margin: 1 }} variant="contained" onClick={markAsReviewed} href='/DoctorViewingPatient'>MARK AS REVIEWED</Button>) :
-                                        (<Button xs={12} sm={3} sx={{ margin: 1 }} variant="contained" onClick={markAsReviewed} disabled href='/DoctorViewingPatient'>MARK AS REVIEWED</Button>)}
-                                    {/* This button will allow the doctor to accept a chat from a patient, initially  the chat is disabled.
+                  {(!isViewed || isNewPatient) && viewingDoctorsPatient ? (
+                    <Button
+                      xs={12}
+                      sm={3}
+                      sx={{ margin: 1 }}
+                      variant='contained'
+                      onClick={markAsReviewed}
+                      href='/DoctorViewingPatient'
+                    >
+                      MARK AS REVIEWED
+                    </Button>
+                  ) : (
+                    <Button
+                      xs={12}
+                      sm={3}
+                      sx={{ margin: 1 }}
+                      variant='contained'
+                      onClick={markAsReviewed}
+                      disabled
+                      href='/DoctorViewingPatient'
+                    >
+                      MARK AS REVIEWED
+                    </Button>
+                  )}
+                  {/* This button will allow the doctor to accept a chat from a patient, initially  the chat is disabled.
                                     This action can only be performed by the patients own doctor. */}
-                                    {(!isChatRequested || isChatAccepted || !viewingDoctorsPatient) ? (
-                                        // Display chat only if the chat is accepted and it is your patient
-                                        (isChatAccepted && viewingDoctorsPatient)?( 
-                                    <Link to='/LiveChatDoctor' state={{ ID: val.ID }} style={{ textDecoration: 'none' }}>
-                                        <Button xs={12} sm={3} sx={{ margin: 1 }}  variant="contained" href='/LiveChatDoctor'>CHAT</Button>
-                                    </Link>):
-                                    (<Button xs={12} sm={3} sx={{ margin: 1 }} disabled variant="contained">ACCEPT CHAT</Button>)
-                                    ) :
-                                    (<Button xs={12} sm={3} sx={{ margin: 1 }} variant="contained" onClick={acceptChat}>ACCEPT CHAT</Button>)}
-                                </Grid>
-                            </Box>
-                        </Box>
+                  {!isChatRequested ||
+                  isChatAccepted ||
+                  !viewingDoctorsPatient ? (
+                    // Display chat only if the chat is accepted and it is your patient
+                    isChatAccepted && viewingDoctorsPatient ? (
+                      <Link
+                        to='/LiveChatDoctor'
+                        state={{ ID: val.ID }}
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <Button
+                          xs={12}
+                          sm={3}
+                          sx={{ margin: 1 }}
+                          variant='contained'
+                          href='/LiveChatDoctor'
+                        >
+                          CHAT
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button
+                        xs={12}
+                        sm={3}
+                        sx={{ margin: 1 }}
+                        disabled
+                        variant='contained'
+                      >
+                        ACCEPT CHAT
+                      </Button>
                     )
-                })}
-            </Container>
-        </>
-    );
+                  ) : (
+                    <Button
+                      xs={12}
+                      sm={3}
+                      sx={{ margin: 1 }}
+                      variant='contained'
+                      onClick={acceptChat}
+                    >
+                      ACCEPT CHAT
+                    </Button>
+                  )}
+                </Grid>
+              </Box>
+            </Box>
+          );
+        })}
+      </Container>
+    </>
+  );
 }
 export default DoctorViewingPatient;

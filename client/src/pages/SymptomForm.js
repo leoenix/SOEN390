@@ -5,13 +5,13 @@ import { Navigate } from 'react-router-dom';
 
 //This variable represents a function that will be called when the user 
 //submits their Symptom Form. The data enterred will be sent to the 
-//server.js file so that it can be stored in the database.
+//Server.js file so that it can be stored in the database.
 let submitSymptomForm = (event) => {
   event.preventDefault();
   const data = new FormData(event.currentTarget);
   const currentDate = new Date();
   const timestamp = currentDate.getTime();
-  
+
   //once the user finished the symptom form, we send it to the doctor
   Axios.post('http://localhost:8080/createSymptomForm', {
     patientid: localStorage.getItem('id'),
@@ -27,53 +27,51 @@ let submitSymptomForm = (event) => {
     taste: data.get('taste'),
     symptoms: data.get('symptoms'),
     urgent: urgentTwo
-  }).then(() => {
+  },{withCredentials: true}).then(() => {
     console.log("success");
     //return to their profile page
     window.location.href = "/PatientProfile";
   });
 };
 
-
 let urgentTwo = 0;
 function FormRadio(label, radioId, radioName, labelBy) {
-//returns eanumbers from 1-5 for the radio buttons that will be used for each symptom
-return(
-  <FormControl>
-    <FormLabel sx={{ mb: 3 }}>
-      {label}
-    </FormLabel>
+  //returns eanumbers from 1-5 for the radio buttons that will be used for each symptom
+  return (
+    <FormControl>
+      <FormLabel sx={{ mb: 3 }}>
+        {label}
+      </FormLabel>
 
-    <RadioGroup row aria-labelledby={labelBy} defaultValue="top" sx={{ mb: 5 }} id={radioId} name={radioName}>
-      <FormControlLabel value="1" control={<Radio required={true} />} label="1 (None)" labelPlacement="top" required/>
-      <FormControlLabel value="2" control={<Radio required={true} />} label="2" labelPlacement="top" sx={{ mr: 3 }}/>
-      <FormControlLabel value="3" control={<Radio required={true} />} label="3" labelPlacement="top" sx={{ mr: 3 }}/>
-      <FormControlLabel value="4" control={<Radio required={true} />} label="4" labelPlacement="top" sx={{ mr: 3 }}/>
-      <FormControlLabel value="5" control={<Radio required={true} />} label="5" labelPlacement="top" />
-    </RadioGroup>
-  </FormControl>
-)
-}
-
+      <RadioGroup row aria-labelledby={labelBy} defaultValue="top" sx={{ mb: 5 }} id={radioId} name={radioName}>
+        <FormControlLabel value="1" control={<Radio required={true} />} label="1 (None)" labelPlacement="top" required />
+        <FormControlLabel value="2" control={<Radio required={true} />} label="2" labelPlacement="top" sx={{ mr: 3 }} />
+        <FormControlLabel value="3" control={<Radio required={true} />} label="3" labelPlacement="top" sx={{ mr: 3 }} />
+        <FormControlLabel value="4" control={<Radio required={true} />} label="4" labelPlacement="top" sx={{ mr: 3 }} />
+        <FormControlLabel value="5" control={<Radio required={true} />} label="5" labelPlacement="top" />
+      </RadioGroup>
+    </FormControl>
+  )
+};
 
 function SymptomForm() {
   //symptoms we are tracking
-  const storedLabels = ["Difficulty Breathing", "Chest Pain", "Fatigue", "Fever", "Cough", "Loss of Smell", "Loss of Taste"]
-  const nameIDs = ["breathing", "chest", "fatigue", "fever", "cough", "smell", "taste"]
+  const storedLabels = ['Difficulty Breathing', 'Chest Pain', 'Fatigue', 'Fever', 'Cough', 'Loss of Smell', 'Loss of Taste'];
+  const nameIDs = ['breathing', 'chest', 'fatigue', 'fever', 'cough', 'smell', 'taste'];
   //getting data from form
-  let diffBreathing = FormRadio(storedLabels[0], nameIDs[0], nameIDs[0], nameIDs[0])
-  let chestPain = FormRadio(storedLabels[1], nameIDs[1], nameIDs[1], nameIDs[1])
-  let fatigue = FormRadio(storedLabels[2], nameIDs[2], nameIDs[2], nameIDs[2])
-  let fever = FormRadio(storedLabels[3], nameIDs[3], nameIDs[3], nameIDs[3])
-  let cough = FormRadio(storedLabels[4], nameIDs[4], nameIDs[4], nameIDs[4])
-  let smell = FormRadio(storedLabels[5], nameIDs[5], nameIDs[5], nameIDs[5])
-  let taste = FormRadio(storedLabels[6], nameIDs[6], nameIDs[6], nameIDs[6])
+  let diffBreathing = FormRadio(storedLabels[0], nameIDs[0], nameIDs[0], nameIDs[0]);
+  let chestPain = FormRadio(storedLabels[1], nameIDs[1], nameIDs[1], nameIDs[1]);
+  let fatigue = FormRadio(storedLabels[2], nameIDs[2], nameIDs[2], nameIDs[2]);
+  let fever = FormRadio(storedLabels[3], nameIDs[3], nameIDs[3], nameIDs[3]);
+  let cough = FormRadio(storedLabels[4], nameIDs[4], nameIDs[4], nameIDs[4]);
+  let smell = FormRadio(storedLabels[5], nameIDs[5], nameIDs[5], nameIDs[5]);
+  let taste = FormRadio(storedLabels[6], nameIDs[6], nameIDs[6], nameIDs[6]);
   //getting the patients urgent status
   const handleChange = (ev) => {
-    if (ev.target.checked){
-        urgentTwo = 1;
+    if (ev.target.checked) {
+      urgentTwo = 1;
     } else {
-        urgentTwo = 0;
+      urgentTwo = 0;
     }
   };
 
@@ -84,13 +82,13 @@ function SymptomForm() {
       }
 
       <div align="Center">
-        <Paper elevation={24} component="form" onSubmit={submitSymptomForm} sx={{ width: 500, height: 2000, mt: 10, pt: '2%'}}>
+        <Paper elevation={24} component="form" onSubmit={submitSymptomForm} sx={{ width: 500, height: 2000, mt: 10, pt: '2%' }}>
           <Typography component="h2" variant="h2" >
             Symptoms
           </Typography>
 
           {/* Getting the patients tempature */}
-          <FormControl sx={{mt: 10}}>
+          <FormControl sx={{ mt: 10 }}>
             <FormLabel id="temperature" sx={{ mb: 3 }}>
               Please enter your temperature (in degrees Celsius)
             </FormLabel>
@@ -123,7 +121,7 @@ function SymptomForm() {
             {/* Box for any comments */}
             <FormControl>
               <FormLabel id="symptoms" sx={{ mb: 3 }}>Any Additional Symptoms (Optional)?</FormLabel>
-              <TextField id="symptoms" multiline rows={4} label="Enter Any Other Symptoms Here" variant="filled" name="symptoms" sx={{ width: 350 }}/>
+              <TextField id="symptoms" multiline rows={4} label="Enter Any Other Symptoms Here" variant="filled" name="symptoms" sx={{ width: 350 }} />
             </FormControl>
           </div>
 
@@ -131,7 +129,7 @@ function SymptomForm() {
             {/* Patient can mark their case as urgent */}
             <FormControl>
               <FormLabel sx={{ mt: 6 }} position="start">Urgent</FormLabel>
-              <Checkbox id="urgent"  onClick={handleChange}></Checkbox>
+              <Checkbox id="urgent" onClick={handleChange}></Checkbox>
             </FormControl>
           </div>
 

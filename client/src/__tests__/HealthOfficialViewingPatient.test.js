@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 test('Renders the HealthOfficialViewingPatient page', () => {
 
-  localStorage.setItem('role', 'HealthOfficial');
+  localStorage.setItem('role', 'Health Official');
 
   render(
     <BrowserRouter>

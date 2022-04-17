@@ -12,25 +12,25 @@ function PatientAppointment() {
     setValue(event.target.value);
   };
 
-  const [setDisplay , bookedAppointments ] = useState([]);
+  const [setDisplay, bookedAppointments] = useState([]);
 
   function getBookedAppointment() { //this function will return all information associated to validated doctors
     Axios.get("http://localhost:8080/seeCurrentPatientAppointment", {
       params: {
         id: localStorage.getItem('id')
-      }
+      }, withCredentials: true
     }).then((response) => {
       bookedAppointments(response.data);
       console.log(response.data);
       console.log("hello");
     });
-  } 
+  }
 
   function openAppointments() {
     Axios.get("http://localhost:8080/seeOpenAppointments", {
       params: {
         id: localStorage.getItem('id')
-      }
+      }, withCredentials:true
     }).then((response) => {
       setAppointments(response.data);
     });
@@ -67,13 +67,12 @@ function PatientAppointment() {
     getBookedAppointment();
   }, [stopeffect]);
 
-
   //Looping throught the available time slots and adding them to a radio checklist
   let allAppointments = [];
   appointments.forEach((item, index) => {
     allAppointments.push(
       <FormControlLabel value={item} name={item} id={index} control={<Radio />} label={item} />
-    )
+    );
   })
 
   return (
@@ -101,15 +100,15 @@ function PatientAppointment() {
               </FormControl>
             </form>
 
-            <Typography sx={{ mt: 2 , padding: '16px'}} variant='h4'>Upcoming Appointment</Typography>
+            <Typography sx={{ mt: 2, padding: '16px' }} variant='h4'>Upcoming Appointment</Typography>
 
+            {setDisplay.map((val, key) => {
+              return (
+                <Typography sx={{ textAlign: 'center', padding: '50px' }} variant='p' key={key} >Next Appointment: <br></br> {val.dayName} {val.aptDate} {val.startTime} - {val.endTime} </Typography>
+              )
+            }
+            )}
 
-            {setDisplay.map((val,key) => {
-              return(
-            <Typography sx={{ textAlign :'center', padding :'50px'}} variant='p' key={key} >Next Appointment: <br></br> {val.dayName} {val.aptDate} {val.startTime} - {val.endTime} </Typography>
-              )}
-              )}
-            
           </Box>
         </Card>
       </Container>

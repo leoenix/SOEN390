@@ -1,7 +1,7 @@
-import { Container, Button, CardHeader, Avatar, IconButton, Typography, Grid, Paper, Card, Box, styled, TextField } from '@mui/material';
+import { Container, Button, CardHeader, Avatar, IconButton, Typography, Grid, Paper, Card, Box, styled} from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
-import { Navigate } from "react-router-dom";
+import { Navigate } from 'react-router-dom';
 
 //Paper Styling for Tiles
 const TilePaper = styled(Paper)(({ theme }) => ({
@@ -11,6 +11,7 @@ const TilePaper = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.primary,
 }));
 
+{/*
 //Paper Styling for Inactive Accounts
 const InactivePaper = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -18,6 +19,7 @@ const InactivePaper = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
   backgroundColor: '#d3d3d3',
 }));
+*/}
 
 //Paper Styling for Urgent Accounts
 const UrgentPaper = styled(Paper)(({ theme }) => ({
@@ -37,121 +39,126 @@ function AdminDashboard() {
   const [immigrationOfficerListUnvalidated, setImmigrationOfficerListUnvalidated] = useState([]); //all unvalidated immigration officer info
   
   function getValidatedDoctors() { //this function will return all information associated to validated doctors
-    Axios.get("http://localhost:8080/adminViewingValidatedDoctorData").then((response) => {
+    Axios.get("http://localhost:8080/adminViewingValidatedDoctorData",{withCredentials:true}).then((response) => {
       setDoctorListValidated(response.data);
-      //console.log("Validated Doctors:");
+      //console.log('Validated Doctors:');
       //console.log(response.data);
     });
   };
 
   function getUnvalidatedDoctors() { //this function will return all information associated to unvalidated doctors
-    Axios.get("http://localhost:8080/adminViewingUnvalidatedDoctorData").then((response) => {
+    Axios.get("http://localhost:8080/adminViewingUnvalidatedDoctorData",{withCredentials:true}).then((response) => {
       setDoctorListUnvalidated(response.data);
-      // console.log("Unvalidated Doctors:");
+      // console.log('Unvalidated Doctors:');
       // console.log(response.data);
     });
   };
 
   function getValidatedHealthOfficials() { //this function will return all information associated to validated health officials
-    Axios.get("http://localhost:8080/adminViewingValidatedHealthOfficalData").then((response) => {
+    Axios.get("http://localhost:8080/adminViewingValidatedHealthOfficalData",{withCredentials: true}).then((response) => {
       setHealthOfficialListValidated(response.data);
-      // console.log("Validated HO:");
+      // console.log('Validated HO:');
       // console.log(response.data);
     });
   };
 
   function getUnvalidatedHealthOfficials() {//this function will return all information associated to unvalidated health officials
-    Axios.get("http://localhost:8080/adminViewingUnvalidatedHealthOfficalData").then((response) => {
+    Axios.get("http://localhost:8080/adminViewingUnvalidatedHealthOfficalData",{withCredentials: true}).then((response) => {
       setHealthOfficialListUnvalidated(response.data);
-      // console.log("Unvalidated HO:");
+      // console.log('Unvalidated HO:');
       // console.log(response.data);
     });
   };
 
   function getValidatedImmigrationOfficers() { //this function will return all information associated to validated immigration officials
-    Axios.get("http://localhost:8080/adminViewingValidatedImmigrationOfficerData").then((response) => {
+    Axios.get("http://localhost:8080/adminViewingValidatedImmigrationOfficerData",{withCredentials: true}).then((response) => {
       setImmigrationOfficerListValidated(response.data);
-      // console.log("Validated IO:");
+      // console.log('Validated IO:');
       // console.log(response.data);
     });
   };
 
   function getUnvalidatedImmigrationOfficers() { //this function will return all information associated to unvalidated immigration officials
-    Axios.get("http://localhost:8080/adminViewingUnvalidatedImmigrationOfficerData").then((response) => {
+    Axios.get("http://localhost:8080/adminViewingUnvalidatedImmigrationOfficerData",{withCredentials: true}).then((response) => {
       setImmigrationOfficerListUnvalidated(response.data);
-      // console.log("Unvalidated IO:");
+      // console.log('Unvalidated IO:');
       // console.log(response.data);
     });
   };
 
   let validateDoctor = (ID) => { //this function will validate doctors on click
-    Axios.post("http://localhost:8080/validateDoctor", {
+    Axios.post('http://localhost:8080/validateDoctor', {
       DoctorID: ID
-    }).then(() => {
+    },{withCredentials:true}).then(() => {
       //console.log("successfully validated doctor!")
     });
     window.location.reload(false);
   };
 
-  let invalidateDoctor = (ID) => { //This function will update the validate attribute in the users table
-    if (!window.confirm("Are you sure you would like to deny this account? This will permanently delete the account from the system and inform the contact by email.")) {
+  let invalidateDoctor = (ID) => {
+    //This function will update the validate attribute in the users table
+    if (
+      !window.confirm(
+        "Are you sure you would like to deny this account? This will permanently delete the account from the system and inform the contact by email."
+      )
+    ) {
       return;
     }
 
     Axios.post("http://localhost:8080/invalidateDoctor", { //This request will invalidate a doctor
       DoctorID: ID
-    }).then(() => {
+    },{withCredentials: true}).then(() => {
       //console.log("successfully invalidated doctor!")
     });
     window.location.reload(false);
   };
 
   let validateHO = (ID) => { //this function will validate health officials on click
-    Axios.post("http://localhost:8080/validateHealthOfficial", {
+    Axios.post('http://localhost:8080/validateHealthOfficial', {
       HealthOfficialID: ID
-    }).then(() => {
-      //console.log("successfully validated health official!")
+    },{withCredentials: true}).then(() => {
+      //console.log('successfully validated health official!')
     });
     window.location.reload(false);
   };
 
   let invalidateHO = (ID) => { //This function will update the validate attribute in the users table
-    if (!window.confirm("Are you sure you would like to deny this account? This will permanently delete the account from the system and inform the contact by email.")) {
+    if (!window.confirm('Are you sure you would like to deny this account? This will permanently delete the account from the system and inform the contact by email.')) {
       return;
     }
 
-    Axios.post("http://localhost:8080/invalidateHealthOfficial", { //This request will invalidate a health official
+    Axios.post('http://localhost:8080/invalidateHealthOfficial', { //This request will invalidate a health official
       HealthOfficialID: ID
-    }).then(() => {
+    },{withCredentials: true}).then(() => {
       //console.log("successfully invalidated health official!")
     });
     window.location.reload(false);
   };
 
   let validateIO = (ID) => { //this function will validate immigration officers on click
-    Axios.post("http://localhost:8080/validateImmigrationOfficer", {
+    Axios.post('http://localhost:8080/validateImmigrationOfficer', {
       ImmigrationOfficerID: ID
-    }).then(() => {
+    },{withCredentials: true}).then(() => {
       //console.log("successfully validated immigration officer!")
     });
     window.location.reload(false);
   };
   
   let invalidateIO = (ID) => { //This function will update the validate attribute in the users table
-    if (!window.confirm("Are you sure you would like to deny this account? This will permanently delete the account from the system and inform the contact by email.")) {
+    if (!window.confirm('Are you sure you would like to deny this account? This will permanently delete the account from the system and inform the contact by email.')) {
       return;
     }
 
-    Axios.post("http://localhost:8080/invalidateImmigrationOfficer", { //This request will invalidate a immigration officer
+    Axios.post('http://localhost:8080/invalidateImmigrationOfficer', { //This request will invalidate a immigration officer
       ImmigrationOfficerID: ID
-    }).then(() => {
+    },{withCredentials: true}).then(() => {
       //console.log("successfully invalidated immigration officer!")
     });
     window.location.reload(false);
   };
 
   function sendEmail() { //Feature to be implemented soon
-    Axios.post("http://localhost:8080/sendEmail").then(() => {
+    Axios.post("http://localhost:8080/sendEmail",{withCredentials: true}).then(() => {
       //console.log("Sent Email!")
     });
   }
@@ -173,27 +180,27 @@ function AdminDashboard() {
   return (
     <>
       {
-        localStorage.getItem("role") != 'Admin' && <Navigate to={"/"} refresh={true} />
+        localStorage.getItem('role') !== 'Admin' && <Navigate to={'/'} refresh={true} />
       }
      <Box sx={{flexGrow: 1}}> 
       <CardHeader
         avatar={
-          <Avatar aria-label="">
+          <Avatar aria-label=''>
           </Avatar>
         }
         action={
-          <IconButton aria-label=""></IconButton>
+          <IconButton aria-label=''></IconButton>
         }
-        title="Welcome Admin"
-        subheader="Admin"
+        title='Welcome Admin'
+        subheader='Admin'
       />
       {/* Doctor Block */}
-      <Container maxWidth="md" sx={{ padding: '2%' }}>
+      <Container maxWidth='md' sx={{ padding: '2%' }}>
         {/* Title Doctor Block and Standard Grid Sizing */}
         <Grid container spacing={2} >
           <Grid item xs={12}>
             <Card container sx={{ marginBottom: '2%', padding: '3%' }}>
-              <Typography variant="body1" color="initial" >
+              <Typography variant='body1' color='initial' >
                 Doctors
               </Typography>
             </Card>
@@ -207,21 +214,21 @@ function AdminDashboard() {
                 <UrgentPaper>
                   <CardHeader
                     avatar={
-                      <Avatar aria-label="">
+                      <Avatar aria-label=''>
                         D*
                       </Avatar>
                     }
                     action={
-                      <IconButton aria-label=""></IconButton>
+                      <IconButton aria-label=''></IconButton>
                     }
-                    title = {val.Fname + " " + val.Lname} 
+                    title = {val.Fname + ' ' + val.Lname} 
                     subheader = {`Contact: ${val.Phone}`} 
                   />
-                   <Typography variant="body2" display="block" gutterBottom sx={{ marginLeft: '20%', color: 'black'}}>Doctor License: {val.License}</Typography>
-                  <Button  sx={{ marginLeft: '20%'}} variant="contained" color="primary" onClick={() => validateDoctor(val.ID)} >
+                   <Typography variant='body2' display='block' gutterBottom sx={{ marginLeft: '20%', color: 'black'}}>Doctor License: {val.License}</Typography>
+                  <Button  sx={{ marginLeft: '20%'}} variant='contained' color='primary' onClick={() => validateDoctor(val.ID)} >
                   VALIDATE
                   </Button>
-                  <Button variant="contained" color="primary" onClick={() => invalidateDoctor(val.ID)} sx={{ ml: '2%' }} >
+                  <Button variant='contained' color='primary' onClick={() => invalidateDoctor(val.ID)} sx={{ ml: '2%' }} >
                   DENY
                   </Button>
                 </UrgentPaper>
@@ -236,17 +243,17 @@ function AdminDashboard() {
                 <TilePaper>
                   <CardHeader
                     avatar={
-                      <Avatar aria-label="">
+                      <Avatar aria-label=''>
                         D{key}
                       </Avatar>
                     }
                     action={
-                      <IconButton aria-label=""></IconButton>
+                      <IconButton aria-label=''></IconButton>
                     }
-                    title = {val.Fname + " " + val.Lname} 
+                    title = {val.Fname + ' ' + val.Lname} 
                     subheader = {`Contact: ${val.Phone}`} 
                   />
-                   <Typography variant="body2" display="block" gutterBottom sx={{ marginLeft: '20%',}}>Doctor License: {val.License}</Typography>
+                   <Typography variant='body2' display='block' gutterBottom sx={{ marginLeft: '20%',}}>Doctor License: {val.License}</Typography>
                 </TilePaper>
               </Grid>
             )
@@ -255,12 +262,12 @@ function AdminDashboard() {
         </Grid> 
       </Container>
       {/* Health Officials Block */}
-      <Container maxWidth="md" sx={{ padding: '2%' }}>
+      <Container maxWidth='md' sx={{ padding: '2%' }}>
         {/* Title Health Official Block and Standard Grid Sizing */}
         <Grid container spacing={2} >
           <Grid item xs={12}>
             <Card container sx={{ marginBottom: '2%', padding: '3%' }}>
-              <Typography variant="body1" color="initial" >
+              <Typography variant='body1' color='initial' >
                 Health Officials
               </Typography>
             </Card>
@@ -274,20 +281,20 @@ function AdminDashboard() {
                 <UrgentPaper>
                   <CardHeader
                     avatar={
-                      <Avatar aria-label="">
+                      <Avatar aria-label=''>
                         H*
                       </Avatar>
                     }
                     action={
-                      <IconButton aria-label=""></IconButton>
+                      <IconButton aria-label=''></IconButton>
                     }
-                    title = {val.Fname + " " + val.Lname} 
+                    title = {val.Fname + ' ' + val.Lname} 
                     subheader = {`Contact: ${val.Phone}`} 
                   />
-                   <Button  sx={{ marginLeft: '20%'}} variant="contained" color="primary" onClick={() => validateHO(val.ID)} >
+                   <Button  sx={{ marginLeft: '20%'}} variant='contained' color='primary' onClick={() => validateHO(val.ID)} >
                   VALIDATE
                   </Button>
-                  <Button variant="contained" color="primary" onClick={() => invalidateHO(val.ID)} sx={{ ml: '2%' }} >
+                  <Button variant='contained' color='primary' onClick={() => invalidateHO(val.ID)} sx={{ ml: '2%' }} >
                   DENY
                   </Button>
                 </UrgentPaper>
@@ -302,14 +309,14 @@ function AdminDashboard() {
                 <TilePaper>
                   <CardHeader
                     avatar={
-                      <Avatar aria-label="">
+                      <Avatar aria-label=''>
                         H{key}
                       </Avatar>
                     }
                     action={
-                      <IconButton aria-label=""></IconButton>
+                      <IconButton aria-label=''></IconButton>
                     }
-                    title = {val.Fname + " " + val.Lname} 
+                    title = {val.Fname + ' ' + val.Lname} 
                     subheader = {`Contact: ${val.Phone}`} 
                   />
                 </TilePaper>
@@ -320,12 +327,12 @@ function AdminDashboard() {
         </Grid> 
       </Container>
       {/* Immigration Officers Block */}
-      <Container maxWidth="md" sx={{ padding: '2%' }}>
+      <Container maxWidth='md' sx={{ padding: '2%' }}>
         {/* Title Immigration Officers Block and Standard Grid Sizing */}
         <Grid container spacing={2} >
           <Grid item xs={12}>
             <Card container sx={{ marginBottom: '2%', padding: '3%' }}>
-              <Typography variant="body1" color="initial" >
+              <Typography variant='body1' color='initial' >
               Immigration Officers
               </Typography>
             </Card>
@@ -339,20 +346,20 @@ function AdminDashboard() {
                 <UrgentPaper>
                   <CardHeader
                     avatar={
-                      <Avatar aria-label="">
+                      <Avatar aria-label=''>
                         I*
                       </Avatar>
                     }
                     action={
-                      <IconButton aria-label=""></IconButton>
+                      <IconButton aria-label=''></IconButton>
                     }
-                    title = {val.Fname + " " + val.Lname} 
+                    title = {val.Fname + ' ' + val.Lname} 
                     subheader = {`Contact: ${val.Phone}`} 
                   />
-                  <Button  sx={{ marginLeft: '20%'}} variant="contained" color="primary" onClick={() => validateIO(val.ID)} >
+                  <Button  sx={{ marginLeft: '20%'}} variant='contained' color='primary' onClick={() => validateIO(val.ID)} >
                   VALIDATE
                   </Button>
-                  <Button variant="contained" color="primary" onClick={() => invalidateIO(val.ID)} sx={{ ml: '2%' }} >
+                  <Button variant='contained' color='primary' onClick={() => invalidateIO(val.ID)} sx={{ ml: '2%' }} >
                   DENY
                   </Button>
                 </UrgentPaper>
@@ -367,14 +374,14 @@ function AdminDashboard() {
                 <TilePaper>
                   <CardHeader
                     avatar={
-                      <Avatar aria-label="">
+                      <Avatar aria-label=''>
                         H{key}
                       </Avatar>
                     }
                     action={
-                      <IconButton aria-label=""></IconButton>
+                      <IconButton aria-label=''></IconButton>
                     }
-                    title = {val.Fname + " " + val.Lname} 
+                    title = {val.Fname + ' ' + val.Lname} 
                     subheader = {`Contact: ${val.Phone}`} 
                   />
                 </TilePaper>

@@ -1,10 +1,14 @@
 const express = require("express");
-const db = require("../database");
+const db = require("../Database");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const bodyParser = require("body-parser");
-const ChatController = express.Router()
+const ChatController = express.Router();
+const {patient, doctorOrPatient, doctor} = require("../middleware/Roles");
+const {auth} = require("../middleware/Auth");
+
+
 
 ChatController.use(express.json());
 ChatController.use(cookieParser());
@@ -12,9 +16,8 @@ ChatController.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
 ChatController.use(express.static(path.join(__dirname, "../client/build")));
 ChatController.use(express.static(__dirname + "../client/public/"));
 ChatController.use(bodyParser.urlencoded({ extended: true }));
-ChatController.use(bodyParser.json())
+ChatController.use(bodyParser.json());
 ChatController.use(express.static('dist'));
-
 
 ChatController.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
@@ -23,11 +26,11 @@ ChatController.use(function (req, res, next) {
 });
 
 //Sets ChatRequested attribute in the patient table to 1
-ChatController.post("/RequestChat", (req, res) => {
+ChatController.post("/RequestChat", [patient, auth],(req, res) => {
     let patientID = req.body.patientid; //this PatientID is used in the query to specify which patient tuple to edit
     //parameters: ID
     //returns:
-    state = "UPDATE 390db.patients SET ChatRequested=1 WHERE ID=?"
+    state = "UPDATE 390db.patients SET ChatRequested=1 WHERE ID=?";
     db.query(state,
         [patientID],
         (err, results) => {
@@ -41,11 +44,11 @@ ChatController.post("/RequestChat", (req, res) => {
 });
 
 //Sets the ChatPermission attribute in the patient table to 1 and ChatRequested attribute to 0
-ChatController.post("/acceptChat", (req, res) => {
+ChatController.post("/acceptChat",[doctor, auth], (req, res) => {
     let patientID = req.body.PatientID; //this PatientID is used in the query to specify which patient tuple to edit
     //parameters: ID
     //returns:
-    state = "UPDATE 390db.patients SET ChatRequested=false WHERE ID=?"
+    state = "UPDATE 390db.patients SET ChatRequested=false WHERE ID=?";
     db.query(state, [patientID],
         (err, results) => {
             if (err) {
@@ -71,7 +74,7 @@ ChatController.post("/acceptChat", (req, res) => {
 //This query get all messages between a specific patient and doctor.
 //parameters: patientId
 //returns: `MessageID`, `PatientID`, `DoctorID`, `RoomID`, `Timestamp`, `Message`, `SenderID`, `Seen`
-ChatController.get("/liveChatMessages", (req, res) => {
+ChatController.get("/liveChatMessages", [doctorOrPatient, auth],(req, res) => {
     let patientId = req.query["id"];
 
     let state1 = "SELECT * FROM 390db.livechat LC WHERE LC.PatientID = ? ORDER BY LC.Timestamp";
@@ -90,7 +93,7 @@ ChatController.get("/liveChatMessages", (req, res) => {
 /*This post method adds new patient live chat messages to the database*/
 //parameters: patientId, doctorId, roomId, timestamp, message, senderId
 //returns:
-ChatController.post("/createPatientLiveChatMessage", (req, res) => {
+ChatController.post("/createPatientLiveChatMessage", [patient, auth], (req, res) => {
     let patientId = req.body.id;
     let doctorId;
     let roomId = req.body.id;
@@ -120,7 +123,7 @@ ChatController.post("/createPatientLiveChatMessage", (req, res) => {
                         if (err) {
                             console.log(err);
                         } else {
-                            console.log("Message inserted!");
+                            //console.log("Message inserted!");
                         }
                     }
                 );
@@ -132,7 +135,7 @@ ChatController.post("/createPatientLiveChatMessage", (req, res) => {
 /*This post method is called when a patient or doctor sends a message through the live chat*/
 //parameters: patientId, doctorId, roomId,senderId, timestamp, message, senderId
 //returns: 
-ChatController.post("/createDoctorLiveChatMessage", (req, res) => {
+ChatController.post("/createDoctorLiveChatMessage", [doctor, auth],(req, res) => {
     let patientId = req.body.patientId;
     let doctorId = req.body.id;
     let roomId = req.body.patientId;
@@ -159,7 +162,7 @@ ChatController.post("/createDoctorLiveChatMessage", (req, res) => {
 //This query gets the patient name, doctor name, and doctor id for a specific patient id
 //parameters: patientId
 //returns: patientName, doctorName, doctorId
-ChatController.get("/patientDoctorName", (req, res) => {
+ChatController.get("/patientDoctorName", [doctorOrPatient, auth], (req, res) => {
     let patientId = req.query.id;
     //This query is used in order to get the first name of both the patient and doctor using the patiendid as the passed value
     let state = "SELECT pat.FName AS patientName, doc.FName AS doctorName, doc.ID AS doctorId FROM 390db.patients p, 390db.users pat, 390db.users doc WHERE p.ID = ? AND p.ID = pat.ID AND p.DoctorID = doc.ID";

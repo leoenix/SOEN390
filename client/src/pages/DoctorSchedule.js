@@ -12,12 +12,12 @@ const TimeSlotCalendar = () => {
     const currentDate = moment().isoWeekday(0).startOf("day"); // Setting the reference date to equal Sunday
     const [timeSlotsPerDay, setTimeSlotsPerDay] = useState([]);
     const selectedTimeSlots = []; // An array storing the data of each selected slot.
-    const [previousSlots, setPreviousSlots] = useState([])
-    const [previousMonday, setPreviousMonday] = useState(Array(18).fill(false))
-    const [previousTuesday, setPreviousTuesday] = useState(Array(18).fill(false))
-    const [previousWednesday, setPreviousWednesday] = useState(Array(18).fill(false))
-    const [previousThursday, setPreviousThursday] = useState(Array(18).fill(false))
-    const [previousFriday, setPreviousFriday] = useState(Array(18).fill(false))
+    const [previousSlots, setPreviousSlots] = useState([]);
+    const [previousMonday, setPreviousMonday] = useState(Array(18).fill(false));
+    const [previousTuesday, setPreviousTuesday] = useState(Array(18).fill(false));
+    const [previousWednesday, setPreviousWednesday] = useState(Array(18).fill(false));
+    const [previousThursday, setPreviousThursday] = useState(Array(18).fill(false));
+    const [previousFriday, setPreviousFriday] = useState(Array(18).fill(false));
     const previousDaysArray = [previousMonday, previousTuesday, previousWednesday, previousThursday, previousFriday];
     const calculatedTimeSlots = [];
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
@@ -27,26 +27,26 @@ const TimeSlotCalendar = () => {
         // changing the appropriate day boolean values according to the index
         switch (timeSlot.day){
             case 'Monday':
-                setPreviousMonday(prevState => prevState.map((item, idx) => idx === index ? !item : item))
+                setPreviousMonday(prevState => prevState.map((item, idx) => idx === index ? !item : item));
                 break;
             case 'Tuesday':
-                setPreviousTuesday(prevState => prevState.map((item, idx) => idx === index ? !item : item))
+                setPreviousTuesday(prevState => prevState.map((item, idx) => idx === index ? !item : item));
                 break;
             case 'Wednesday':
-                setPreviousWednesday(prevState => prevState.map((item, idx) => idx === index ? !item : item))
+                setPreviousWednesday(prevState => prevState.map((item, idx) => idx === index ? !item : item));
                 break;
             case 'Thursday':
-                setPreviousThursday(prevState => prevState.map((item, idx) => idx === index ? !item : item))
+                setPreviousThursday(prevState => prevState.map((item, idx) => idx === index ? !item : item));
                 break;
             case 'Friday':
-                setPreviousFriday(prevState => prevState.map((item, idx) => idx === index ? !item : item))
+                setPreviousFriday(prevState => prevState.map((item, idx) => idx === index ? !item : item));
                 break;
         }
 
       if (event.target.checked) {
             selectedTimeSlots.push(timeSlot);
         } else {
-            previousSlots.splice(previousSlots.findIndex(slot => slot.StartTime.substr(0, 5) === timeSlot.label.substr(0, 5) && slot.dayName === timeSlot.day.substr(0, 3)), 1)
+            previousSlots.splice(previousSlots.findIndex(slot => slot.StartTime.substr(0, 5) === timeSlot.label.substr(0, 5) && slot.dayName === timeSlot.day.substr(0, 3)), 1);
 
             const indexToRemove = selectedTimeSlots.indexOf(timeSlot);
             if (indexToRemove > -1) {
@@ -92,7 +92,7 @@ const TimeSlotCalendar = () => {
 
     };
     const getDoctorSchedule = () => {
-        Axios.get("http://localhost:8080/doctorFilledSlots", {params: {id: localStorage.getItem('id')}}).then((response) => {
+        Axios.get("http://localhost:8080/doctorFilledSlots", {params: {id: localStorage.getItem('id')}, withCredentials:true}).then((response) => {
 
             //array of false has a false value for each day for each possible increment (18 total increments for each day).
             let arrayOfFalse = new Array(5);
@@ -100,17 +100,17 @@ const TimeSlotCalendar = () => {
             arrayOfFalse[y] = new Array(18).fill(false);}
             // filtering schedule by day and then finding the indexes representing the increments that are in the day
             days.forEach((day, index)=> {
-                let temp = []
-                temp = response.data.filter(s => s.dayName === day)
-                let dayIndexes = []
+                let temp = [];
+                temp = response.data.filter(s => s.dayName === day);
+                let dayIndexes = [];
                 temp.forEach(t => {
                     if (t) {
-                        dayIndexes.push(calculatedTimeSlots[0].slots.findIndex(s => s.label.substr(0, 5) === t.StartTime.substr(0, 5)))
+                        dayIndexes.push(calculatedTimeSlots[0].slots.findIndex(s => s.label.substr(0, 5) === t.StartTime.substr(0, 5)));
                     }
 
                 });
                 // updating the appropriate day and increment with a truth value if value is in response
-                dayIndexes.forEach((dayIdx) => arrayOfFalse[index][dayIdx] = true)
+                dayIndexes.forEach((dayIdx) => arrayOfFalse[index][dayIdx] = true);
 
             })
            setPreviousMonday(arrayOfFalse[0]);
@@ -118,7 +118,7 @@ const TimeSlotCalendar = () => {
             setPreviousWednesday(arrayOfFalse[2]);
             setPreviousThursday(arrayOfFalse[3]);
             setPreviousFriday(arrayOfFalse[4]);
-        }).catch(alert);
+        }).catch((err) => console.log(err));
 
     }
 
@@ -142,11 +142,11 @@ const TimeSlotCalendar = () => {
         // Posts the json object containing the doctor's times to the server and awaits a confirmation response
         let doctorScheduleData = {backendTimeSlots}
         Axios.post('http://localhost:8080/doctorAvailbility', doctorScheduleData, {withCredentials: true}).then(res => {
-            console.log(res)
+            console.log(res);
             alert("New time slots properly registered");
             window.location.href = "/"
         }).catch((err) => {
-            console.log(err)
+            console.log(err);
         });
 
     }

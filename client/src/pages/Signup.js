@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
-import { Container, Typography, Box, Grid, Link, Checkbox, FormControlLabel, TextField, CssBaseline, Button, Avatar, MenuItem, stepConnectorClasses } from '@mui/material'
+import { Container, Typography, Box, Grid, Link, TextField, CssBaseline, Button, Avatar, MenuItem} from '@mui/material'
 import Axios from 'axios';
 import validator from 'validator';
 import { Navigate } from "react-router-dom";
@@ -64,9 +64,8 @@ function Signup() {
         window.location.href = "/Login"
       }).catch(() => setEmailExisting('Your email already exists!'));
     }
-
-
   };
+
   // if is doctor we will add health license
   const handleChange = (event2) => {
     setRoles(event2.target.value);
@@ -84,7 +83,7 @@ function Signup() {
   };
   // remove error message after new submit
   const submit = () => {
-    setEmailExisting('')
+    setEmailExisting('');
   };
 
   //validating email

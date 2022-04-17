@@ -1,4 +1,4 @@
-import {createContext} from "react";
+import {createContext} from 'react';
 // context to share functions
-const Common = createContext(null);
-export default Common;
+const common = createContext(null);
+export default common;

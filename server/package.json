@@ -2,10 +2,10 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "Server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "node Server.js",
     "build": "../node_modules/.bin/react-scripts build",
     "dev": "server/node_modules/.bin/nodemon ",
     "devStart2": "nodemon authServer.js"

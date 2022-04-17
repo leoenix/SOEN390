@@ -1,15 +1,14 @@
 import * as React from 'react';
-import {Avatar, IconButton, Button, Box, Grid, CardHeader, Typography, Select, MenuItem} from '@mui/material';
+import {Avatar, IconButton, Button, Box, Grid, CardHeader, Typography} from '@mui/material';
 import FlagIcon from '@mui/icons-material/Flag';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import Axios from 'axios';
-import { useState, useEffect } from "react";
-import {Link, Navigate, useSearchParams} from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import {Link, Navigate} from 'react-router-dom';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
-
 
 function DoctorPatientProfile() {
   const [patientList, setPatientList] = useState([]); //all patient info
@@ -17,9 +16,6 @@ function DoctorPatientProfile() {
   const [executed, setExecuted] = useState(false); //keeps track of if getPatients() method is called
   const [viewedList, setViewedList] = useState([]); //Patients whose profiles have been reviewed by a doctor
   var tempDoctorID = parseInt(localStorage.getItem('id'));
-
-  var myPatients = patientList.filter(e => e.DoctorID === tempDoctorID); //returns a filtered list of patients that are assigned to the doctor
-  var allPatients = patientList; //returns all patients
 
   const filterMyPatients = () => { //this function will set the useState filteredPatients to show ALL patients
     setFilteredPatients(myPatients)
@@ -29,25 +25,27 @@ function DoctorPatientProfile() {
     setFilteredPatients(allPatients)
   };
 
+  var myPatients = patientList.filter(e => e.DoctorID === tempDoctorID); //returns a filtered list of patients that are assigned to the doctor
+  var allPatients = patientList; //returns all patients
+
   function getPatients() { //this function is called when the doctor patient profile page is loaded. It sets the useState patientList to the query result for patient info
-    Axios.get("http://localhost:8080/DoctorPatientProfile").then((response) => {
+    Axios.get("http://localhost:8080/DoctorPatientProfile",{withCredentials: true}).then((response) => {
       setPatientList(response.data);
       console.log(patientList);
       if (!executed) {
         setFilteredPatients(response.data);
         setExecuted(true);
       }
-    }).catch(alert);  
+    }).catch(console.log('err'));
   };
 
   const getViewed = () => { //this function is called when the doctor patient profile page is loaded. It sets the useState patientList to the query result for patient info
-    Axios.get("http://localhost:8080/Viewed").then((response) => {
+    Axios.get("http://localhost:8080/Viewed",{withCredentials: true}).then((response) => {
       setViewedList(response.data);
-    }).catch(alert);  
+    }).catch(console.log('err'));
   };
 
   let stopeffect = 1;
-
 
   useEffect(() => { //After the page is rendered, the two functions getPatients() and getViewed() are called once
     getPatients();
@@ -57,11 +55,11 @@ function DoctorPatientProfile() {
   return (
     <>
       {
-        (localStorage.getItem("role") !== 'Doctor' && localStorage.getItem("role") !== 'Admin')&& <Navigate to={"/"} refresh={true} />
+        (localStorage.getItem('role') !== 'Doctor' && localStorage.getItem('role') !== 'Admin')&& <Navigate to={'/'} refresh={true} />
       }
       <div>
         <Box sx={{ padding: 5 }}>
-          <Typography component="h1" variant="h2">Patient List
+          <Typography component='h1' variant='h2'>Patient List
             {/* Buttons allow you to switch from your patiens to all patients */}
             <Button value='All Patients' name='All Patients' variant='contained' onClick={() => filterAllPatients()} sx={{ textAlign: 'right', ml: 1, display: 'inline-block', float: 'right' }}>
               All Patients
@@ -96,14 +94,14 @@ function DoctorPatientProfile() {
                     <Button variant='outlined' href='/DoctorViewingPatient' fullWidth>
                       <CardHeader fullwidth avatar={ 
                         // Avatar for each patient
-                          <Avatar aria-label=""> 
+                          <Avatar aria-label=''> 
                             P{key}
                           </Avatar>
                         }
                         action={
-                          <IconButton aria-label=""></IconButton>
+                          <IconButton aria-label=''></IconButton>
                         }
-                        title={val.Fname + " " + val.Lname} //name of patient from db
+                        title={val.Fname + ' ' + val.Lname} //name of patient from db
                         subheader={val.Status} //status of patient from db
                       />
 

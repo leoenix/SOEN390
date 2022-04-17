@@ -7,7 +7,6 @@ import { Navigate } from "react-router-dom";
 import Common from "../components/Common";
 import axios from "axios";
 
-
 //handling the login form
 class Login extends Component {
 
@@ -27,8 +26,8 @@ class Login extends Component {
 
     // on login remove errors. if errors set errors. if not login and reload page. will be redirected in render
     onLogin() {
-        this.setState({ unvalidated: '' })
-        this.setState({ wrongCredentials: '' })
+        this.setState({ unvalidated: '' });
+        this.setState({ wrongCredentials: '' });
         Axios.post('http://localhost:8080/Login', {
             email: this.state.email,
             password: this.state.password
@@ -40,7 +39,7 @@ class Login extends Component {
                     window.location.reload();
                 }
                 ).catch(err => {
-                    console.log(err)
+                    console.log(err);
                     reject(null);
                 })
             }))
@@ -48,9 +47,9 @@ class Login extends Component {
         }).catch((err => {
             //Checks if the credentials are valid but the doctor has not yet been validated 
             if (err.response.status === 405) {
-                this.setState({ unvalidated: 'Please wait for validation!' })
+                this.setState({ unvalidated: 'Please wait for validation!' });
             } else {
-                this.setState({ wrongCredentials: 'You have entered the wrong credentials!' })
+                this.setState({ wrongCredentials: 'You have entered the wrong credentials!' });
 
             }
         }));

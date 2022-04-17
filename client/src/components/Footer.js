@@ -5,7 +5,7 @@ function StickyFooter() {
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '30vh', textAlign: 'center' }}>
       <CssBaseline />
       {/* Adding the theme for the footer */}
-      <Box component="footer" sx={{
+      <Box component='footer' sx={{
         py: 6, px: 2, mt: 'auto',
         backgroundColor: (theme) =>
           theme.palette.mode === 'light'
@@ -13,14 +13,14 @@ function StickyFooter() {
             : theme.palette.grey[800],
       }}>
         {/* Displaying the footer */}
-        <Container maxWidth="sm">
-          <Typography variant="body1">
+        <Container maxWidth='sm'>
+          <Typography variant='body1'>
             COVID-19 Application
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant='body2' color='text.secondary'>
             {'Copyright © '}
             {/* The copyright leads to the github */}
-            <Link color="inherit" href='https://github.com/JeffreyCHChan/SOEN390'>
+            <Link color='inherit' href='https://github.com/JeffreyCHChan/SOEN390'>
               SOENXCLUSIVE
             </Link>{' '}
             {new Date().getFullYear()}

@@ -5,7 +5,7 @@ import { Navigate } from 'react-router-dom';
 
 //This variable represents a function that will be called when the user submits
 //their form to change their status. It will post the data from the form to
-//the server.js file so that the patient's information can be altered in
+//the Server.js file so that the patient's information can be altered in
 //the database.
 let submitPatientFile = (event) => {
   event.preventDefault();
@@ -13,14 +13,13 @@ let submitPatientFile = (event) => {
   Axios.post('http://localhost:8080/createPatientFile', {
     patientid: localStorage.getItem('id'),
     status: data.get('PatientFile')
-  }).then(() => {
+  },{withCredentials: true}).then(() => {
     console.log('success');
     window.location.href = "/PatientFiles";
   });
 };
 
 function PatientFiles() {
-
 
   return (
     <>
@@ -41,9 +40,9 @@ function PatientFiles() {
           </Typography>
           {/* The form with the radio buttons to select your status */}
           <FormControl>
-          <Button xs={12} sm={3} sx={{ margin: 1 }} variant="contained" component="label" >                                  
-            <input accept=".pdf,image/*" type="file" />                             
-            </Button> 
+            <Button xs={12} sm={3} sx={{ margin: 1 }} variant="contained" component="label" >
+              <input accept=".pdf,image/*" type="file" />
+            </Button>
           </FormControl>
           <br></br>
           <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
