@@ -81,7 +81,6 @@ function Signup() {
     setValue(DOB.target.value);
     dateOfBirth = DOB.target.value
   };
-  
   // remove error message after new submit
   const submit = () => {
     setEmailExisting('');
